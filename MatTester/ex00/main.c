@@ -10,10 +10,34 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <unistd.h>
+
 void	rush(int x, int y);
 
 int	main(void)
 {
-	rush(5, 5);
+	write(1, "NOTHING\n", 8);
+	rush(-5000000, -50000000);
+	rush(-5, -5);
+	rush(-5, 0);
+	rush(0, 0);
+	rush(0, -50);
+	rush(10, -50);
+	rush(-500, 10);
+	write(1, "TEST1\n", 6);
+	rush(1, 500);
+	rush(1, 0);
+	rush(1, 2);
+	rush(1, 1);
+	rush(2, 2);
+	rush(2, 1);
+	rush(0, 1);
+	rush(500, 1);
+	rush(3000, 200);
+	rush(100, 250);
+	rush(42, 121);
+	rush(4200, 20);
+	rush(9, 5);
+
 	return (0);
 }

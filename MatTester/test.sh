@@ -1,10 +1,28 @@
 #!/bin/bash
 
+check_binaries() {
+    retval=0
+    for (( i=0; i<$1; i++ ))
+    do    
+        ./binaries/rush0$i\_ref > log/log_ref$i.log && ./binaries/rush0$i\_piscine > log/log_piscine$i.log
+        diff log/log_ref$i.log log/log_piscine$i.log > diff/diff$i.log
+        if [ -s diff/diff$i.log ]
+        then
+            echo "Test$((i+1))" $' - Diff spotted, check log file\t\t[\u274C]'
+            retval=1
+        else
+            echo "Test$((i+1))" $'\t\t\t\t\t[\U2705]'
+        fi
+    done
+    return $retval
+}
+
 check_compi() {
     retval=0
     for (( i=0; i<$1; i++ ))
     do    
-        compile_ref=$(gcc -Wall -Wextra -Werror $2/main.c $2/ft_putchar.c $2/rush0$i.c -o MatTester/binaries/rush0$i\_ref &>/dev/null )
+        compile_ref=$(gcc -Wall -Wextra -Werror $2/main.c $2/ft_putchar.c $2/rush0$i.c &>/dev/null )
+        compile_ref_bis=$(gcc -Wall -Wextra -Werror MatTester/ex00/main.c $2/ft_putchar.c $2/rush0$i.c -o MatTester/binaries/rush0$i\_ref &>/dev/null )
         compile_corrected=$(gcc -Wall -Wextra -Werror MatTester/ex00/main.c MatTester/ex00/ft_putchar.c MatTester/ex00/rush0$i.c -o MatTester/binaries/rush0$i\_piscine)
         $compile_ref
         if [ $? -ne 0 ]
@@ -14,6 +32,7 @@ check_compi() {
         else
             echo "Test$((i+1))" $'\t\t\t\t\t[\U2705]'
         fi
+        $compile_ref_bis
         $compile_corrected
     done
     return $retval
@@ -73,6 +92,18 @@ check_repo() {
     fi
     return $retval
 }
+
+echo $'\t\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b'
+echo $'\t\U0001f33b\t\t\t\U0001f33b'
+echo $'\t\U0001f33b\033[1m    mlarboul TESTER   \U0001f33b'
+echo $'\t\U0001f33b\t\t\t\U0001f33b'
+echo $'\t\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b\U0001f33b'
+
+echo
+
+mkdir "binaries" &>/dev/null
+mkdir "log" &>/dev/null
+mkdir "diff" &>/dev/null
 
 check_root() {
     files_nb=$(find -maxdepth 1 | wc -l)
@@ -161,5 +192,28 @@ then
     echo $'\033[1mCOMPILE TESTS\t\t\t\t[\e[32mSUCCED\e[0m]\n'
 else
     echo $'\033[1mCOMPILE TESTS\t\t\t\t[\e[32mFAILED\e[0m]\n'
+    rush_is_ok=0
+fi
+rm a.out &>/dev/null
+
+cd MatTester/
+check_binaries $rush_nb
+if [ $? -eq 0 ]
+then
+    rm log/*
+    rm diff/*
+    echo $'\033[1mBINARIES TESTS\t\t\t\t[\e[32mSUCCED\e[0m]\n'
+else
+    echo $'\033[1mBINARIES TESTS\t\t\t\t[\e[32mFAILED\e[0m]\n'
+    rush_is_ok=0
+fi
+rm binaries/rush* &>/dev/null
+
+if [ $rush_is_ok -ne 0 ]
+then
+
+    echo $'\033[1m\e[32mALL TESTS WENT WELL - GOOD JOB!!\e[0m\n'
+else
+    echo $'\033[1m\e[31mSOMETHING WENT WRONG - TOO BAD..\e[0m\n'
     rush_is_ok=0
 fi

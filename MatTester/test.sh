@@ -209,7 +209,7 @@ else
 fi
 rm binaries/rush* &>/dev/null
 
-if [ $rush_is_ok -ne 0 ]
+if [ $rush_is_ok -eq 1 ]
 then
 
     echo $'\033[1m\e[32mALL TESTS WENT WELL - GOOD JOB!!\e[0m\n'

@@ -65,7 +65,7 @@ no_ex00() {
 check_repo() {
     hidden_nb=$(find -name ".*" | wc -l)
     not_c=$(find -not \( -type f -name "*.c" \) | wc -l)
-    mandatory_file=$(find -type f -name "rush00.c" -o -name "main.c" -o -name "ft_putchar.c" | wc -l)
+    mandatory_file=$(find -type f -name "rush0*" -o -name "main.c" -o -name "ft_putchar.c" | wc -l)
     retval=0
 
     if [ $hidden_nb -gt 1 ]
@@ -83,7 +83,7 @@ check_repo() {
         else
         echo $'Test 2\t\t\t\t\t[\U2705]'
     fi
-    if [ $mandatory_file -ne 3 ]
+    if [ $mandatory_file -lt 3 ]
     then
         echo $'Could not find all 3 mandatory files\t[\u274C]'
         retval=1

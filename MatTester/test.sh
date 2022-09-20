@@ -2,16 +2,20 @@
 
 check_binaries() {
     retval=0
+
     for (( i=0; i<$1; i++ ))
     do    
-        ./binaries/rush0$i\_ref > log/log_ref$i.log && ./binaries/rush0$i\_piscine > log/log_piscine$i.log
-        diff log/log_ref$i.log log/log_piscine$i.log > diff/diff$i.log
-        if [ -s diff/diff$i.log ]
-        then
-            echo "Test$((i+1))" $' - Diff spotted, check log file\t\t[\u274C]'
-            retval=1
-        else
-            echo "Test$((i+1))" $'\t\t\t\t\t[\U2705]'
+        FILE=binaries/rush0$i\_ref
+        if test -f "$FILE"; then
+                    ./binaries/rush0$i\_ref > log/log_ref$i.log && ./binaries/rush0$i\_piscine > log/log_piscine$i.log
+            diff log/log_ref$i.log log/log_piscine$i.log > diff/diff$i.log
+            if [ -s diff/diff$i.log ]
+            then
+                echo "Test$((i+1))" $' - Diff spotted, check log file\t[\u274C]'
+                retval=1
+            else
+                echo "Test$((i+1))" $'\t\t\t\t\t[\U2705]'
+            fi
         fi
     done
     return $retval
@@ -191,7 +195,7 @@ if [ $? -eq 0 ]
 then
     echo $'\033[1mCOMPILE TESTS\t\t\t\t[\e[32mSUCCED\e[0m]\n'
 else
-    echo $'\033[1mCOMPILE TESTS\t\t\t\t[\e[32mFAILED\e[0m]\n'
+    echo $'\033[1mCOMPILE TESTS\t\t\t\t[\e[31mFAILED\e[0m]\n'
     rush_is_ok=0
 fi
 rm a.out &>/dev/null
@@ -204,7 +208,7 @@ then
     rm diff/*
     echo $'\033[1mBINARIES TESTS\t\t\t\t[\e[32mSUCCED\e[0m]\n'
 else
-    echo $'\033[1mBINARIES TESTS\t\t\t\t[\e[32mFAILED\e[0m]\n'
+    echo $'\033[1mBINARIES TESTS\t\t\t\t[\e[31mFAILED\e[0m]\n'
     rush_is_ok=0
 fi
 rm binaries/rush* &>/dev/null
